@@ -128,7 +128,7 @@ public abstract class ObservableRecipient : ObservableObject
     }
 
     /// <summary>
-    /// Broadcasts a <see cref="PropertyChangedMessage{T}"/> with the specified
+    /// Broadcasts a <see cref="PropertyChangedMessage{T}"/> and <see cref="PropertyChangedMessage" /> with the specified
     /// parameters, without using any particular token (so using the default channel).
     /// </summary>
     /// <typeparam name="T">The type of the property that changed.</typeparam>
@@ -144,6 +144,7 @@ public abstract class ObservableRecipient : ObservableObject
         PropertyChangedMessage<T> message = new(this, propertyName, oldValue, newValue);
 
         _ = Messenger.Send(message);
+        _ = Messenger.Send(new PropertyChangedMessage(this, propertyName));
     }
 
     /// <summary>

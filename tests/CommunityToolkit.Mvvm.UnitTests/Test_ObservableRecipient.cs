@@ -93,6 +93,25 @@ public class Test_ObservableRecipient
     }
 
     [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_ObservableRecipient_BroadcastNonGenericPropertyChangedMessage(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        SomeRecipient<int>? viewmodel = new(messenger);
+
+        PropertyChangedMessage? message = null;
+
+        messenger.Register<PropertyChangedMessage>(messenger, (r, m) => message = m);
+
+        viewmodel.Data = 42;
+
+        Assert.IsNotNull(message);
+        Assert.AreSame(message.Sender, viewmodel);
+        Assert.AreEqual(nameof(SomeRecipient<int>.Data), message.PropertyName);
+    }
+
+    [TestMethod]
     public void Test_IRecipient_VerifyTrimmingAnnotation()
     {
 #if NET6_0_OR_GREATER
